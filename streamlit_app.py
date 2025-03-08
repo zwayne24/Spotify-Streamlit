@@ -127,7 +127,7 @@ top_artists_only_one_listener = top_artists[(top_artists['Zach'] > 0) & (top_art
 top_artists_only_one_listener = pd.concat([top_artists_only_one_listener, top_artists[(top_artists['Zach'] == 0) & (top_artists['Maggie'] > 0) & (top_artists['Jamie'] == 0) & (top_artists['Bryce'] == 0)]])
 top_artists_only_one_listener = pd.concat([top_artists_only_one_listener, top_artists[(top_artists['Zach'] == 0) & (top_artists['Maggie'] == 0) & (top_artists['Jamie'] > 0) & (top_artists['Bryce'] == 0)]]).reset_index(drop=True)
 top_artists_only_one_listener = pd.concat([top_artists_only_one_listener, top_artists[(top_artists['Zach'] == 0) & (top_artists['Maggie'] == 0) & (top_artists['Jamie'] == 0) & (top_artists['Bryce'] > 0)]]).reset_index(drop=True)
-top_artists_only_one_listener = top_artists_only_one_listener[['Artist', 'Zach', 'Maggie', 'Jamie', 'Bryce', 'Total']]
+top_artists_only_one_listener = top_artists_only_one_listener[['Artist', 'Zach', 'Maggie', 'Jamie', 'Bryce']]
 top_artists_only_one_listener = top_artists_only_one_listener.melt(id_vars=['Artist'], value_vars=['Zach', 'Maggie', 'Jamie', 'Bryce'], var_name='Listener', value_name='Total')
 top_artists_only_one_listener = top_artists_only_one_listener[top_artists_only_one_listener['Total'] > 0]
 top_artists_only_one_listener = top_artists_only_one_listener.sort_values(by='Total', ascending=False).reset_index(drop=True)
