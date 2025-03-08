@@ -1,1 +1,3 @@
-venny4py
+numpy
+pandas
+streamlit
