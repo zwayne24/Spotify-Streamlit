@@ -149,11 +149,29 @@ top_artists_only_one_listener = pd.DataFrame(rows)
 # Sort by Total plays
 top_artists_only_one_listener = top_artists_only_one_listener.sort_values(by='Total', ascending=False).reset_index(drop=True)
 
+# Ensure a fresh copy of the DataFrame to avoid caching issues in Streamlit
+top_artists = top_artists.copy()
 
-#flatten top_artists to three columns, artist, listener, and total
-top_artists_by_listener = top_artists.melt(id_vars=['Artist'], value_vars=['Zach', 'Maggie', 'Jamie', 'Bryce'], var_name='Listener', value_name='Total')
-top_artists_by_listener = top_artists_by_listener[top_artists_by_listener['Total'] > 0]
+# Define listeners
+listeners = ['Zach', 'Maggie', 'Jamie', 'Bryce']
+
+# Create an empty list to store rows
+rows = []
+
+# Iterate through each listener and extract non-zero values
+for listener in listeners:
+    filtered_df = top_artists[top_artists[listener] > 0][['Artist', listener]]
+    
+    # Convert to the desired format
+    for _, row in filtered_df.iterrows():
+        rows.append({'Artist': row['Artist'], 'Listener': listener, 'Total': row[listener]})
+
+# Convert list to DataFrame
+top_artists_by_listener = pd.DataFrame(rows)
+
+# Sort by Total plays
 top_artists_by_listener = top_artists_by_listener.sort_values(by='Total', ascending=False).reset_index(drop=True)
+
 
 unique_artists_per_listener = pd.DataFrame(columns=['Listener', 'Unique Artists'])
 for listener in ['Zach', 'Maggie', 'Jamie', 'Bryce']:
