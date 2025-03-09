@@ -4,6 +4,7 @@ import streamlit as st
 
 df_2024 = pd.read_excel('Spotify Top 100 2024.xlsx', sheet_name='2024 Full View').iloc[:, :-4]
 df_2023 = pd.read_excel('Spotify Top 100 2024.xlsx', sheet_name='2023 Full View').iloc[:, :-4]
+df_2024['Release Date'] = df_2024['Release Date'].astype(str)
 
 overlap_24 = df_2024.iloc[:,0:5].dropna(thresh=3)
 overlap_24 = overlap_24.merge(df_2024.loc[:, [df_2024.columns[0]] + list(df_2024.columns[5:])], on='track_id')
