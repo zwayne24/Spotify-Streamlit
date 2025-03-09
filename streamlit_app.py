@@ -123,8 +123,6 @@ for artist in artists:
 top_artists = top_artists[['Artist', 'Zach', 'Maggie', 'Jamie', 'Bryce', 'Total']]
 top_artists = top_artists.sort_values(by='Total', ascending=False).reset_index(drop=True).iloc[:-1,:]
 
-import pandas as pd
-
 # Ensure a fresh copy of the DataFrame to avoid caching issues in Streamlit
 top_artists = top_artists.copy()
 
@@ -141,17 +139,17 @@ for listener in listeners:
 # Combine results
 top_artists_only_one_listener = pd.concat(filtered_dfs, ignore_index=True)
 
-# Melt the DataFrame safely
+# Melt the DataFrame safely, avoiding a column name conflict
 top_artists_only_one_listener = top_artists_only_one_listener.melt(
     id_vars=['Artist'], 
     value_vars=listeners, 
     var_name='Listener', 
-    value_name='Total'
+    value_name='Total_Value'  # Renamed from "Total" to avoid conflict
 )
 
 # Remove zero values and sort
-top_artists_only_one_listener = top_artists_only_one_listener[top_artists_only_one_listener['Total'] > 0]
-top_artists_only_one_listener = top_artists_only_one_listener.sort_values(by='Total', ascending=False).reset_index(drop=True)
+top_artists_only_one_listener = top_artists_only_one_listener[top_artists_only_one_listener['Total_Value'] > 0]
+top_artists_only_one_listener = top_artists_only_one_listener.sort_values(by='Total_Value', ascending=False).reset_index(drop=True)
 
 
 #flatten top_artists to three columns, artist, listener, and total
