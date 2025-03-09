@@ -123,13 +123,36 @@ for artist in artists:
 top_artists = top_artists[['Artist', 'Zach', 'Maggie', 'Jamie', 'Bryce', 'Total']]
 top_artists = top_artists.sort_values(by='Total', ascending=False).reset_index(drop=True).iloc[:-1,:]
 
-top_artists_only_one_listener = top_artists[['Artist', 'Zach', 'Maggie', 'Jamie', 'Bryce']][(top_artists['Zach'] > 0) & (top_artists['Maggie'] == 0) & (top_artists['Jamie'] == 0) & (top_artists['Bryce'] == 0)]
-top_artists_only_one_listener = pd.concat([top_artists_only_one_listener, top_artists[(top_artists['Zach'] == 0) & (top_artists['Maggie'] > 0) & (top_artists['Jamie'] == 0) & (top_artists['Bryce'] == 0)]])
-top_artists_only_one_listener = pd.concat([top_artists_only_one_listener, top_artists[(top_artists['Zach'] == 0) & (top_artists['Maggie'] == 0) & (top_artists['Jamie'] > 0) & (top_artists['Bryce'] == 0)]]).reset_index(drop=True)
-top_artists_only_one_listener = pd.concat([top_artists_only_one_listener, top_artists[(top_artists['Zach'] == 0) & (top_artists['Maggie'] == 0) & (top_artists['Jamie'] == 0) & (top_artists['Bryce'] > 0)]]).reset_index(drop=True)
-top_artists_only_one_listener = top_artists_only_one_listener.melt(id_vars=['Artist'], value_vars=['Zach', 'Maggie', 'Jamie', 'Bryce'], var_name='Listener', value_name='Total')
+import pandas as pd
+
+# Ensure a fresh copy of the DataFrame to avoid caching issues in Streamlit
+top_artists = top_artists.copy()
+
+# Define listeners
+listeners = ['Zach', 'Maggie', 'Jamie', 'Bryce']
+
+# Filter artists listened to by only one person
+filtered_dfs = []
+for listener in listeners:
+    other_listeners = [l for l in listeners if l != listener]
+    condition = (top_artists[listener] > 0) & (top_artists[other_listeners].sum(axis=1) == 0)
+    filtered_dfs.append(top_artists.loc[condition, ['Artist'] + listeners])
+
+# Combine results
+top_artists_only_one_listener = pd.concat(filtered_dfs, ignore_index=True)
+
+# Melt the DataFrame safely
+top_artists_only_one_listener = top_artists_only_one_listener.melt(
+    id_vars=['Artist'], 
+    value_vars=listeners, 
+    var_name='Listener', 
+    value_name='Total'
+)
+
+# Remove zero values and sort
 top_artists_only_one_listener = top_artists_only_one_listener[top_artists_only_one_listener['Total'] > 0]
 top_artists_only_one_listener = top_artists_only_one_listener.sort_values(by='Total', ascending=False).reset_index(drop=True)
+
 
 #flatten top_artists to three columns, artist, listener, and total
 top_artists_by_listener = top_artists.melt(id_vars=['Artist'], value_vars=['Zach', 'Maggie', 'Jamie', 'Bryce'], var_name='Listener', value_name='Total')
