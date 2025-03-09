@@ -129,27 +129,25 @@ top_artists = top_artists.copy()
 # Define listeners
 listeners = ['Zach', 'Maggie', 'Jamie', 'Bryce']
 
-# Filter artists listened to by only one person
-filtered_dfs = []
+# Create an empty list to store rows
+rows = []
+
+# Loop through each listener and find artists they listened to exclusively
 for listener in listeners:
     other_listeners = [l for l in listeners if l != listener]
+    
+    # Condition: The listener has played it, and no one else has
     condition = (top_artists[listener] > 0) & (top_artists[other_listeners].sum(axis=1) == 0)
-    filtered_dfs.append(top_artists.loc[condition, ['Artist'] + listeners])
+    
+    # Append results to list
+    for _, row in top_artists.loc[condition, ['Artist', listener]].iterrows():
+        rows.append({'Artist': row['Artist'], 'Listener': listener, 'Total': row[listener]})
 
-# Combine results
-top_artists_only_one_listener = pd.concat(filtered_dfs, ignore_index=True)
+# Convert list to DataFrame
+top_artists_only_one_listener = pd.DataFrame(rows)
 
-# Melt the DataFrame safely, avoiding a column name conflict
-top_artists_only_one_listener = top_artists_only_one_listener.melt(
-    id_vars=['Artist'], 
-    value_vars=listeners, 
-    var_name='Listener', 
-    value_name='Total_Value'  # Renamed from "Total" to avoid conflict
-)
-
-# Remove zero values and sort
-top_artists_only_one_listener = top_artists_only_one_listener[top_artists_only_one_listener['Total_Value'] > 0]
-top_artists_only_one_listener = top_artists_only_one_listener.sort_values(by='Total_Value', ascending=False).reset_index(drop=True)
+# Sort by Total plays
+top_artists_only_one_listener = top_artists_only_one_listener.sort_values(by='Total', ascending=False).reset_index(drop=True)
 
 
 #flatten top_artists to three columns, artist, listener, and total
