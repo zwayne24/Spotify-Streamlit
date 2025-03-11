@@ -8,7 +8,7 @@ df_2024['Release Date'] = df_2024['Release Date'].astype(str)
 
 overlap_24 = df_2024.iloc[:,0:5].dropna(thresh=3)
 overlap_24 = overlap_24.merge(df_2024.loc[:, [df_2024.columns[0]] + list(df_2024.columns[5:])], on='track_id')
-overlap_24 = overlap_24[['Song', 'Artist', 'Zach', 'Bryce', 'Maggie', 'Jamie']]
+overlap_24 = overlap_24[['Song', 'Artist', 'Zach', 'Bryce', 'Maggie', 'Jamie', 'Release Date']]
 overlap_24['Total Listeners'] = 0
 for rec in overlap_24.index:
     if not pd.isna(overlap_24.loc[rec, 'Zach']):
@@ -190,6 +190,19 @@ temp['decade'] = temp['decade'] + "s"
 decades = temp.groupby('decade').count()
 decades = decades[['Zach', 'Maggie', 'Jamie', 'Bryce']]
 decades = decades.reset_index()
+
+song_count_2024 = df_2024.copy()
+song_count_2024 = song_count_2024[['Zach', 'Maggie', 'Jamie', 'Bryce', 'Release Date']]
+# get release date year = 2024
+song_count_2024['Release Date'] = song_count_2024['Release Date'].str[:4]
+song_count_2024 = song_count_2024[song_count_2024['Release Date'] == '2024']
+song_count_2024 = song_count_2024.count()
+song_count_2024 = pd.DataFrame(song_count_2024).T
+# remove Release Date column
+song_count_2024 = song_count_2024.drop(columns='Release Date')
+# add column add front Titled Year with 2024
+song_count_2024.insert(0, 'Year', '2024     ')
+
 
 most_popular = df_2024.sort_values(by='Popularity', ascending=False).reset_index(drop=True).head(10)
 most_popular['Listener(s)'] = ""
@@ -388,3 +401,4 @@ with tab4:
     with col3:
         st.title("Decades")
         st.dataframe(decades, hide_index=True)
+        st.dataframe(song_count_2024, hide_index=True)
