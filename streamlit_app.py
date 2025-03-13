@@ -208,7 +208,7 @@ song_count_2024 = song_count_2024.drop(columns='Release Date')
 song_count_2024.insert(0, 'Year', '2024     ')
 
 
-most_popular = df_2024.sort_values(by='Popularity', ascending=False).reset_index(drop=True).head(10)
+most_popular = df_2024.sort_values(by='Popularity', ascending=False).reset_index(drop=True).head(20)
 most_popular['Listener(s)'] = ""
 for rec in most_popular.index:
     if not pd.isna(most_popular.loc[rec, 'Zach']):
@@ -225,7 +225,7 @@ most_popular['Listener(s)'] = most_popular['Listener(s)'].str.replace(" ", ", ")
 # remove trailing comma
 most_popular['Listener(s)'] = most_popular['Listener(s)'].str.rstrip(", ")
 
-least_popular = df_2024.sort_values(by='Popularity', ascending=True).reset_index(drop=True).head(10)
+least_popular = df_2024.sort_values(by='Popularity', ascending=True).reset_index(drop=True).head(20)
 least_popular['Listener(s)'] = ""
 for rec in least_popular.index:
     if not pd.isna(least_popular.loc[rec, 'Zach']):
@@ -297,7 +297,7 @@ overlaps_summary.loc[0, 'Bryce Overlaps with 2023 Self'] = len(bryce_overlaps)
 overlaps_summary = overlaps_summary.reset_index(drop=True)
 
 
-newest_songs = df_2024.sort_values(by='Release Date', ascending=False).reset_index(drop=True).head(10)
+newest_songs = df_2024.sort_values(by='Release Date', ascending=False).reset_index(drop=True).head(20)
 newest_songs['Listener(s)'] = ""
 for rec in newest_songs.index:
     if not pd.isna(newest_songs.loc[rec, 'Zach']):
@@ -310,7 +310,7 @@ for rec in newest_songs.index:
         newest_songs.loc[rec, 'Listener(s)'] += "Bryce "
 newest_songs = newest_songs[['Song', 'Artist', 'Listener(s)', 'Release Date']]
 
-oldest_songs = df_2024.sort_values(by='Release Date', ascending=True).reset_index(drop=True).head(10)
+oldest_songs = df_2024.sort_values(by='Release Date', ascending=True).reset_index(drop=True).head(20)
 oldest_songs['Listener(s)'] = ""
 for rec in oldest_songs.index:
     if not pd.isna(oldest_songs.loc[rec, 'Zach']):
@@ -364,8 +364,8 @@ with tab2:
         st.dataframe(top_artists, hide_index=True)
     with col2:
         st.title("Unique Artists")
-        st.write("(including features)")
         st.dataframe(unique_artists_per_listener, hide_index=True)
+        st.caption("Including Features")
     
     col1, col2 = st.columns(2)
     with col1:
