@@ -122,7 +122,6 @@ for artist in artists:
     top_artists = pd.concat([top_artists, temp], ignore_index=True)
 top_artists = top_artists[['Artist', 'Zach', 'Maggie', 'Jamie', 'Bryce', 'Total']]
 top_artists = top_artists.sort_values(by='Total', ascending=False).reset_index(drop=True).iloc[:-1,:]
-top_artists['Total Unique'] = 0
 for artist in top_artists['Artist']:
     temp = df_2024[df_2024['Artist'] == artist]
     top_artists.loc[top_artists['Artist'] == artist, 'Total Unique Songs'] = len(temp)
